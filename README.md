@@ -74,3 +74,9 @@ Timing: 40s (GTX1060 3GB) or <20min (i5-7600K CPU @ 3.80GHz)
 ```command
 python encode_faces.py --dataset ./datasets/ufi-cropped/train --encodings encodings.pickle
 ```
+
+### Detect faces in still images
+
+```bash
+python recognize_faces_image.py --encodings encodings.pickle --image datasets/ufi-cropped/test/s500/10.png 
+```

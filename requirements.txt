@@ -1,0 +1,6 @@
+click==7.1.1
+face-recognition-models==0.3.0
+imutils==0.5.3
+numpy==1.18.2
+opencv-contrib-python==4.2.0.32
+Pillow==7.0.0

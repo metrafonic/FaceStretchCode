@@ -4,4 +4,3 @@ __pycache__/
 dlib/
 .idea/
 datasets/
-*.pickle

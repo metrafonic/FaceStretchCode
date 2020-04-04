@@ -53,10 +53,13 @@ Convert all images to png
 ```command
 mogrify -format png datasets/ufi-cropped/*/*/*.pgm
 rm datasets/ufi-cropped/*/*/*.pgm
+rm datasets/ufi-cropped/*/*/*.txt
 ```
-## Face recognition pipeline
+# Face recognition pipelines
 
-### Encode faces using openCV and deep learning
+## Face recognition with openCV and deep learning
+
+### Encode faces
 
 We will use an existing training network to create 128 dimension embeddings on the images.
 
@@ -79,4 +82,25 @@ python encode_faces.py --dataset ./datasets/ufi-cropped/train --encodings encodi
 
 ```bash
 python recognize_faces_image.py --encodings encodings.pickle --image datasets/ufi-cropped/test/s500/10.png 
+```
+
+### Run score system
+
+```bash
+python recognize_faces_dataset.py --encodings encodings.pickle --image datasets/ufi-cropped/test/ | grep True | wc -l
+
+379
+```
+
+## Face recognition with SVM
+
+```bash
+docker run -it -v $PWD/project:/project registry.hedberg.io/mathias/face_recognition:latest /bin/bash
+cd /root/face_recognition
+export dataset=/project/dataset/
+```
+
+```bash
+python svm.py datasets/ufi-cropped/train/ datasets/ufi-cropped/test/ | grep True | wc -l
+425
 ```

@@ -52,7 +52,7 @@ if __name__ == "__main__":
     import sys
     trainfolder = sys.argv[1]
     testfolder = sys.argv[2]
-    modelfile = os.path.join(trainfolder, "svm.joblib")
+    modelfile = os.path.join("svm.joblib")
     if not os.path.exists(modelfile):
         clf = train(trainfolder, modelfile)
     else:

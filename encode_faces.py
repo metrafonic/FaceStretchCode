@@ -2,7 +2,7 @@
 from imutils import paths
 import face_recognition
 import argparse
-import pickle
+from joblib import dump, load
 import cv2
 import os
 
@@ -49,9 +49,7 @@ def main():
     # dump the facial encodings + names to disk
     print("[INFO] serializing encodings...")
     data = {"encodings": knownEncodings, "names": knownNames}
-    f = open(args["encodings"], "wb")
-    f.write(pickle.dumps(data))
-    f.close()
+    dump(data, args["encodings"])
 
 if __name__ == "__main__":
     main()

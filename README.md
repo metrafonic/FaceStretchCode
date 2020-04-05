@@ -75,32 +75,30 @@ The encodings are then saved to file using `pickle.dumps()`.
 
 Timing: 40s (GTX1060 3GB) or <20min (i5-7600K CPU @ 3.80GHz)
 ```command
-python encode_faces.py --dataset ./datasets/ufi-cropped/train --encodings encodings.pickle
+python encode_faces.py --dataset ./datasets/ufi-cropped/train --encodings encodings.joblib
 ```
 
-### Detect faces in still images
-
 ```bash
-python recognize_faces_image.py --encodings encodings.pickle --image datasets/ufi-cropped/test/s500/10.png 
-```
-
-### Run score system
-
-```bash
-python recognize_faces_dataset.py --encodings encodings.pickle --image datasets/ufi-cropped/test/ | grep True | wc -l
-
+python recognize_faces_dataset.py --encodings encodings.joblib --image datasets/ufi-cropped/test/ | grep True | wc -l
 379
+python recognize_faces_dataset.py --encodings encodings.joblib --image datasets/ufi-cropped/test/ | grep False | wc -l
+226
 ```
 
 ## Face recognition with SVM
 
 ```bash
-docker run -it -v $PWD/project:/project registry.hedberg.io/mathias/face_recognition:latest /bin/bash
-cd /root/face_recognition
-export dataset=/project/dataset/
-```
-
-```bash
 python svm.py datasets/ufi-cropped/train/ datasets/ufi-cropped/test/ | grep True | wc -l
 425
+python svm.py datasets/ufi-cropped/train/ datasets/ufi-cropped/test/ | grep False | wc -l
+180
+```
+
+## Single image training
+Will take a long time (single thread training)
+```bash
+python single_image.py --cpus 4 datasets/ufi-cropped/train/ datasets/ufi-cropped/test/ | grep True | wc -l
+595
+python single_image.py --cpus 4 datasets/ufi-cropped/train/ datasets/ufi-cropped/test/ | grep False | wc -l
+10
 ```

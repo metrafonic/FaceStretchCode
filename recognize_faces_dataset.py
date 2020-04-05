@@ -1,7 +1,7 @@
 # import the necessary packages
 import face_recognition
 import argparse
-import pickle
+from joblib import dump, load
 import cv2
 import os
 
@@ -18,7 +18,7 @@ def main():
     args = vars(ap.parse_args())
     # load the known faces and embeddings
     print("[INFO] loading encodings...")
-    data = pickle.loads(open(args["encodings"], "rb").read())
+    data = load(args["encodings"])
     # load the input image and convert it from BGR to RGB
     for person in next(os.walk(args["image"]))[1]:
         persondir = os.path.join(args["image"], person)

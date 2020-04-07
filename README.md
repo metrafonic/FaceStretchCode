@@ -6,7 +6,7 @@ https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and
 
 System packages
 ```command
-sudo apt install -y cmake imagemagick-6.q16
+sudo apt install -y cmake imagemagick-6.q16 python3-dev
 ```
 Python venv
 ```command
@@ -18,9 +18,7 @@ Dlib without GPU support (optional)
 pip install dlib
 ```
 Dlib with GPU support (optional) - Needs old gcc version
-```command
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-```
+
 ```command
 git clone https://github.com/davisking/dlib.git
 cd dlib
@@ -33,6 +31,13 @@ cd ..
 python setup.py install
 cd ..
 ```
+
+If you get gcc version errors:
+```command
+# Try without this command first
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+```
+
 Python packages
 ```command
 pip install -r requirements.txt
@@ -73,16 +78,30 @@ We then encoode the faces with dlib using `face_recognition.face_encodings`. I a
 
 The encodings are then saved to file using `pickle.dumps()`.
 
+#### CNN
+
 Timing: 40s (GTX1060 3GB) or <20min (i5-7600K CPU @ 3.80GHz)
 ```command
-python encode_faces.py --dataset ./datasets/ufi-cropped/train --encodings encodings.joblib
+python encode_faces.py --detection-method cnn --dataset ./datasets/ufi-cropped/train --encodings encodings-cnn.joblib
 ```
 
 ```bash
-python recognize_faces_dataset.py --encodings encodings.joblib --image datasets/ufi-cropped/test/ | grep True | wc -l
+python recognize_faces_dataset.py --detection-method cnn --encodings encodings-cnn.joblib --image datasets/ufi-cropped/test/ | grep True | wc -l
 379
-python recognize_faces_dataset.py --encodings encodings.joblib --image datasets/ufi-cropped/test/ | grep False | wc -l
+python recognize_faces_dataset.py --detection-method cnn --encodings encodings-cnn.joblib --image datasets/ufi-cropped/test/ | grep False | wc -l
 226
+```
+
+#### HOG
+
+```command
+python encode_faces.py --detection-method hog --dataset ./datasets/ufi-cropped/train --encodings encodings-hog.joblib
+```
+
+```bash
+375
+python recognize_faces_dataset.py --detection-method hog --encodings encodings-hog.joblib --image datasets/ufi-cropped/test/ | grep False | wc -l
+230
 ```
 
 ## Face recognition with SVM

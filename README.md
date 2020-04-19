@@ -42,6 +42,12 @@ Python packages
 ```command
 pip install -r requirements.txt
 ```
+R project
+```bash
+sudo apt install r-base
+sudo R
+> install.package("ROCR")
+```
 
 ## Prepare dataset
 

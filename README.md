@@ -22,10 +22,9 @@ Dlib with GPU support (optional) - Needs old gcc version
 ```command
 git clone https://github.com/davisking/dlib.git
 cd dlib
-git checkout v19.17
 mkdir build
 cd build
-cmake .. -DDLIB_USE_CUDA=1 -DUSE_AVX_INSTRUCTIONS=1
+cmake .. -DCMAKE_C_COMPILER=cuda-gcc -DCMAKE_CXX_COMPILER=cuda-g++
 cmake --build .
 cd ..
 python setup.py install
@@ -34,6 +33,14 @@ cd ..
 
 If you get gcc version errors:
 ```command
+rm -rf build
+
+# Fedora
+dnf copr enable kwizart/cuda-gcc-10.1 -y
+dnf install cuda-gcc cuda-gcc-c++ -y
+export CC=/usr/bin/cuda-gcc
+export CXX=/usr/bin/cuda-g++
+# Ubuntu
 # Try without this command first
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 ```
@@ -66,6 +73,19 @@ mogrify -format png datasets/ufi-cropped/*/*/*.pgm
 rm datasets/ufi-cropped/*/*/*.pgm
 rm datasets/ufi-cropped/*/*/*.txt
 ```
+
+Align faces from test folder
+```bash
+python align.py -r datasets/ufi-cropped/test/ -d datasets/ufi-cropped-aligned/
+```
+Also removes images with errors/no face
+
+Stretch faces using ffmpeg
+```bash
+python stretch.py datasets/ufi-cropped-aligned/ datasets/ufi-cropped-stretched/ 10 5
+
+```
+
 # Face recognition pipelines
 
 ## Face recognition with openCV and deep learning

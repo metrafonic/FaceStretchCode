@@ -29,24 +29,21 @@ def main():
                 with open(faces_info) as f:
                     method_results[method]["faces"].append(int(f.readlines()[0]))
 
+    fig, ax1 = plt.subplots()
+    ax1.set_ylim((0, 100))
+    ax1.set_xlabel('stretch intensity - %')
+    ax1.set_ylabel('successful matches - %')
+    ax1.tick_params(axis='y')
     for method in method_results.keys():
-        fig, ax1 = plt.subplots()
-        ax1.set_ylim((0, 100))
-        ax1.set_xlabel('stretch intensity - %')
-        ax1.set_ylabel('successful matches - %', color='tab:blue')
-        ax1.tick_params(axis='y', labelcolor='tab:blue')
-        ax2 = ax1.twinx()
-        ax2.set_ylim((0, 650))
-        ax2.set_ylabel('successful matches - %', color='tab:red')
-        ax2.tick_params(axis='y', labelcolor='tab:red')
         results = method_results[method]
         ax1.plot(results["x"], results["y"], label = method, linestyle='dashed', linewidth = 2,
-         marker='o', markersize=6, color='tab:blue')
-        if results["faces"]:
-            ax2.plot(results["x"], results["faces"], label=method, linestyle='dashed', linewidth=2,
-                     marker='o', markersize=6, color='tab:red')
-        ax1.set_title(method)
-        plt.show()
+         marker='o', markersize=6)
+        for i_x, i_y in zip(results["x"], results["y"]):
+            ax1.text(i_x, i_y, '  ({}%)'.format(int(i_y)))
+    ax1.set_title("Performance")
+    ax1.legend()
+    plt.show()
+
 
 if __name__ == "__main__":
     main()

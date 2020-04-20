@@ -10,11 +10,11 @@ def main():
     stretches.sort()
     for stretch in stretches:
         stretchdir = os.path.join(results_dir, str(stretch))
-        for csvfile in next(os.walk(stretchdir))[2]:
+        for csvfile in [file for file in list(next(os.walk(stretchdir))[2]) if ".csv" in file]:
             method = os.path.splitext(csvfile)[0]
             csvfile_path = os.path.join(stretchdir, csvfile)
             if not method in method_results:
-                method_results[method] = {"x": [], "y": []}
+                method_results[method] = {"x": [], "y": [], "faces": []}
             with open(csvfile_path) as f:
                 lines = [line.rstrip() for line in f]
             success_r = re.compile("^1,")
@@ -24,15 +24,29 @@ def main():
             success_rate = float(len(success_list)*100) / (len(lines))
             method_results[method]["x"].append(int(stretch))
             method_results[method]["y"].append(success_rate)
+            faces_info = f"{os.path.splitext(csvfile_path)[0]}-faces.txt"
+            if os.path.exists(faces_info):
+                with open(faces_info) as f:
+                    method_results[method]["faces"].append(int(f.readlines()[0]))
+
     for method in method_results.keys():
+        fig, ax1 = plt.subplots()
+        ax1.set_ylim((0, 100))
+        ax1.set_xlabel('stretch intensity - %')
+        ax1.set_ylabel('successful matches - %', color='tab:blue')
+        ax1.tick_params(axis='y', labelcolor='tab:blue')
+        ax2 = ax1.twinx()
+        ax2.set_ylim((0, 650))
+        ax2.set_ylabel('successful matches - %', color='tab:red')
+        ax2.tick_params(axis='y', labelcolor='tab:red')
         results = method_results[method]
-        plt.plot(results["x"], results["y"], label = method, linestyle='dashed', linewidth = 2,
-         marker='o', markersize=6)
-    plt.legend()
-    plt.xlabel('stretch intensity - %')
-    plt.ylabel('successful matches - %')
-    plt.show()
-    print(method_results)
+        ax1.plot(results["x"], results["y"], label = method, linestyle='dashed', linewidth = 2,
+         marker='o', markersize=6, color='tab:blue')
+        if results["faces"]:
+            ax2.plot(results["x"], results["faces"], label=method, linestyle='dashed', linewidth=2,
+                     marker='o', markersize=6, color='tab:red')
+        ax1.set_title(method)
+        plt.show()
 
 if __name__ == "__main__":
     main()

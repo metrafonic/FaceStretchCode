@@ -291,6 +291,8 @@ def main():
     # print total faces and labels
     print("Total faces: ", len(faces))
     print("Total labels: ", len(labels))
+    with open(f"{os.path.splitext(sys.argv[4])[0]}-faces.txt", 'a+', encoding='utf-8') as f:
+        f.write(f"{int(len(faces))}")
 
     face_recognizer = cv2.face.EigenFaceRecognizer_create()
     #face_recognizer = cv2.face.LBPHFaceRecognizer_create()

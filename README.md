@@ -53,7 +53,7 @@ R project
 ```bash
 sudo apt install r-base
 sudo R
-> install.package("ROCR")
+> install.packages("ROCR")
 ```
 
 ## Prepare dataset
@@ -69,6 +69,7 @@ unzip -d datasets/ datasets/ufi-cropped.zip
 
 Convert all images to png
 ```command
+DO NOT DO THIS!!!!
 mogrify -format png datasets/ufi-cropped/*/*/*.pgm
 rm datasets/ufi-cropped/*/*/*.pgm
 rm datasets/ufi-cropped/*/*/*.txt
@@ -82,7 +83,12 @@ Also removes images with errors/no face
 
 Stretch faces using ffmpeg
 ```bash
-python stretch.py datasets/ufi-cropped-aligned/ datasets/ufi-cropped-stretched/ 10 5
+python stretch.py datasets/ufi-cropped/test/ datasets/ufi-cropped-stretched/ 10 5
+```
+
+# Run all
+```bash
+./run_all.sh datasets/ufi-cropped-stretched/ datasets/ufi-cropped/train/ results/
 
 ```
 

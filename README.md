@@ -88,7 +88,7 @@ python stretch.py datasets/ufi-cropped/test/ datasets/ufi-cropped-stretched/ 10 
 
 # Run all
 ```bash
-./run_all.sh datasets/ufi-cropped-stretched/ datasets/ufi-cropped/train/ results/
+time ./run_all.sh datasets/ufi-cropped-stretched/ datasets/ufi-cropped/train/ results/
 
 ```
 

@@ -7,6 +7,9 @@ import cv2
 import os
 import glob
 
+faces_total = 0
+faces_caught = 0
+
 
 def encode(dataset, encodings_file, method):
     # grab the paths to the input images in our dataset
@@ -16,6 +19,8 @@ def encode(dataset, encodings_file, method):
     # initialize the list of known encodings and known names
     knownEncodings = []
     knownNames = []
+    global faces_total
+    faces_total = len(imagePaths)
 
 
     # loop over the image paths
@@ -36,6 +41,9 @@ def encode(dataset, encodings_file, method):
         # compute the facial embedding for the face
         encodings = face_recognition.face_encodings(rgb, boxes)
         # loop over the encodings
+        global faces_caught
+        if len(encodings)>0:
+            faces_caught += 1
         for encoding in encodings:
             # add each encoding + name to our set of known names and
             # encodings
@@ -52,9 +60,12 @@ def encode(dataset, encodings_file, method):
 def recognize(encodings_file, image_dir, method, csv_file):
     data = load(encodings_file)
     # load the input image and convert it from BGR to RGB
+    global faces_caught
+    global faces_total
+    face_percent = float(faces_caught)*100 / faces_total
     recognition_info_file = f"{os.path.splitext(csv_file)[0]}-faces.txt"
     with open(recognition_info_file, 'a+', encoding='utf-8') as f:
-        f.write(f"{len(data['encodings'])}")
+        f.write(f"{face_percent}")
     print("[INFO] predicting faces...")
     for person in next(os.walk(image_dir))[1]:
         persondir = os.path.join(image_dir, person)

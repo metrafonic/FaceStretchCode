@@ -9,8 +9,9 @@ def main():
     dst_dir = sys.argv[2]
     stretch_interval = int(sys.argv[3])
     stretch_count = int(sys.argv[4]) * 2 + 1
-    out_width = 128
-    out_height = 128
+    out_width = int(sys.argv[5])
+    out_height = int(sys.argv[6])
+
     pad = f"{out_width}:{out_height}:({out_width}-iw*min({out_width}/iw\,{out_height}/ih))/2:({out_height}-ih*min({out_width}/iw\,{out_height}/ih))/2"
 
     for i in range(stretch_count):

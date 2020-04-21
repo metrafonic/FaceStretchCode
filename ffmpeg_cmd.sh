@@ -1,1 +1,1 @@
-ffmpeg -i datasets/ufi-cropped/test/s405/3.pgm -vf scale='iw*0.50:ih/1, pad=128:128:(128-iw*min(128/iw\,128/ih))/2:(128-ih*min(128/iw\,128/ih))/2' datasets/ufi-cropped-stretched/50/s405/stretched.pgm
+ffmpeg -i datasets/yalefaces-sorted/train/subject15/id.pgm -vf scale='iw*0.60:ih/1, pad=320:243:(320-iw*min(320/iw\,243/ih))/2:(243-ih*min(320/iw\,243/ih))/2' datasets/yalefaces-sorted-stretched/40/subject15/stretched.pgm

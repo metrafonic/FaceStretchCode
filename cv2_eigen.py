@@ -24,7 +24,10 @@ import numpy as np
 import sys
 from joblib import dump, load
 # ### Training Data
-
+faces_total = 0
+faces_detected = 0
+id_conversion = {0: "unknown"}
+face_ids = 0
 # The more images used in training the better. Normally a lot of images are used for training a face recognizer so that it can learn different looks of the same person, for example with glasses, without glasses, laughing, sad, happy, crying, with beard, without beard etc. To keep our tutorial simple we are going to use only 12 images for each person.
 #
 # So our training data consists of total 2 persons with 12 images of each person. All training data is inside _`training-data`_ folder. _`training-data`_ folder contains one folder for each person and **each folder is named with format `sLabel (e.g. s1, s2)` where label is actually the integer label assigned to that person**. For example folder named s1 means that this folder contains images for person 1. The directory structure tree for training data is as follows:
@@ -101,7 +104,7 @@ def detect_face(img):
 
     # let's detect multiscale (some images may be closer to camera than others) images
     # result is a list of faces
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.01, minNeighbors=5);
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5);
 
     # if no faces are detected then return original img
     if (len(faces) == 0):
@@ -134,20 +137,23 @@ def prepare_training_data(data_folder_path):
     faces = []
     # list to hold labels for all subjects
     labels = []
-
+    global faces_total
+    faces_total = len(dirs)
     # let's go through each directory and read images within it
     for dir_name in dirs:
 
         # our subject directories start with letter 's' so
         # ignore any non-relevant directories if any
-        if not dir_name.startswith("s"):
-            continue;
 
         # ------STEP-2--------
         # extract label number of subject from dir_name
         # format of dir name = slabel
         # , so removing letter 's' from dir_name will give us label
-        label = int(dir_name.replace("s", ""))
+        global face_ids
+        global id_conversion
+        face_ids += 1
+        label = int(face_ids)
+        id_conversion[label] = dir_name
 
         # build path of directory containin images for current subject subject
         # sample subject_dir_path = "training-data/s1"
@@ -181,7 +187,9 @@ def prepare_training_data(data_folder_path):
             # ------STEP-4--------
             # for the purpose of this tutorial
             # we will ignore faces that are not detected
+            global faces_detected
             if face is not None:
+                faces_detected += 1
                 face = cv2.resize(face, (128, 128))
                 # add face to list of faces
                 faces.append(face)
@@ -291,8 +299,11 @@ def main():
     # print total faces and labels
     print("Total faces: ", len(faces))
     print("Total labels: ", len(labels))
+    global faces_detected
+    global faces_total
+    face_percent = float(faces_detected)*100 / faces_total
     with open(f"{os.path.splitext(sys.argv[4])[0]}-faces.txt", 'a+', encoding='utf-8') as f:
-        f.write(f"{int(len(faces))}")
+        f.write(f"{face_percent}")
 
     face_recognizer = cv2.face.EigenFaceRecognizer_create()
     #face_recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -303,9 +314,10 @@ def main():
     # load test images
     image_dir = sys.argv[2]
     csv_file = sys.argv[4]
+    global id_conversion
     for person in next(os.walk(image_dir))[1]:
         persondir = os.path.join(image_dir, person)
-        personid = str(os.path.basename(persondir)).replace("s", "")
+        personid = str(os.path.basename(persondir))
         for image_name in next(os.walk(persondir))[2]:
             image_filepath = os.path.join(persondir, image_name)
             # perform a prediction
@@ -319,10 +331,10 @@ def main():
             else:
                 confidence = 1
             correct_guess = False
-            if int(label) == int(personid):
+            if id_conversion[int(label)] == personid:
                 correct_guess = True
             with open(csv_file, 'a+', encoding='utf-8') as f:
-                f.write(f"{int(correct_guess)},{confidence},{label},{personid}" + "\n")
+                f.write(f"{int(correct_guess)},{confidence},{id_conversion[int(label)]},{personid}" + "\n")
 
 
 if __name__ == "__main__":

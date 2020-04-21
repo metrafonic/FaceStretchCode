@@ -27,10 +27,9 @@ def main():
             faces_info = f"{os.path.splitext(csvfile_path)[0]}-faces.txt"
             if os.path.exists(faces_info):
                 with open(faces_info) as f:
-                    method_results[method]["faces"].append(int(f.readlines()[0]))
+                    method_results[method]["faces"].append(float(f.readlines()[0]))
 
     fig, ax1 = plt.subplots()
-    ax1.set_ylim((0, 100))
     ax1.set_xlabel('stretch intensity - %')
     ax1.set_ylabel('successful matches - %')
     ax1.tick_params(axis='y')
@@ -39,6 +38,20 @@ def main():
         ax1.plot(results["x"], results["y"], label = method, linestyle='dashed', linewidth = 2,
          marker='o', markersize=6)
         for i_x, i_y in zip(results["x"], results["y"]):
+            ax1.text(i_x, i_y, '  ({}%)'.format(int(i_y)))
+    ax1.set_title("Performance")
+    ax1.legend()
+    plt.show()
+
+    fig, ax1 = plt.subplots()
+    ax1.set_xlabel('stretch intensity - %')
+    ax1.set_ylabel('successful matches - %')
+    ax1.tick_params(axis='y')
+    for method in method_results.keys():
+        results = method_results[method]
+        ax1.plot(results["x"], results["faces"], label=method, linestyle='dashed', linewidth=2,
+                 marker='o', markersize=6)
+        for i_x, i_y in zip(results["x"], results["faces"]):
             ax1.text(i_x, i_y, '  ({}%)'.format(int(i_y)))
     ax1.set_title("Performance")
     ax1.legend()

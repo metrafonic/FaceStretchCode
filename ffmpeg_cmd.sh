@@ -1,1 +1,1 @@
-ffmpeg -i datasets/yalefaces-sorted/train/subject15/id.pgm -vf scale='iw*0.60:ih/1, pad=320:243:(320-iw*min(320/iw\,243/ih))/2:(243-ih*min(320/iw\,243/ih))/2' datasets/yalefaces-sorted-stretched/40/subject15/stretched.pgm
+ffmpeg -i datasets/faces94-sorted/train/voudcx/id.pgm -vf scale='iw*0.60:ih/1, pad=180:200:(180-iw*min(180/iw\,200/ih))/2:(200-ih*min(180/iw\,200/ih))/2' datasets/faces94-sorted-stretched/40/voudcx/stretched.pgm

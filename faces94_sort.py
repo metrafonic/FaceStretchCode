@@ -6,7 +6,7 @@ import shutil
 infolder = sys.argv[1]
 outfolder = sys.argv[2]
 
-image_paths = glob.glob(f"{infolder}/male/*/*.jpg")
+image_paths = glob.glob(f"{infolder}/*/*/*.jpg")
 for image in image_paths:
     print(image)
     try:

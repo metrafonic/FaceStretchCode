@@ -21,40 +21,63 @@ def main():
             success_list = list(filter(success_r.match, lines))
             fail_r = re.compile("^0,")
             fail_list = list(filter(fail_r.match, lines))
-            success_rate = float(len(success_list)*100) / (len(lines))
+            success_rate = float(len(success_list)) / (len(lines))
             method_results[method]["x"].append(int(stretch))
             method_results[method]["y"].append(success_rate)
             faces_info = f"{os.path.splitext(csvfile_path)[0]}-faces.txt"
             if os.path.exists(faces_info):
                 with open(faces_info) as f:
-                    method_results[method]["faces"].append(float(f.readlines()[0]))
+                    method_results[method]["faces"].append(float(1) - float(f.readlines()[0])/100)
 
+    for method in method_results.keys():
+        zip_object = zip(method_results[method]["faces"], method_results[method]["y"])
+        difference = []
+        for list1_i, list2_i in zip_object:
+            difference.append(list1_i + list2_i)
+        method_results[method]["diff"] = difference
+
+    linetypes = ['dashed', 'dotted']
+    dottypes = ['o', 'x']
     fig, ax1 = plt.subplots()
     ax1.set_xlabel('stretch intensity - %')
-    ax1.set_ylabel('successful matches - %')
+    ax1.set_ylabel('TPIR')
     ax1.tick_params(axis='y')
+    i = 0
     for method in method_results.keys():
         results = method_results[method]
-        ax1.plot(results["x"], results["y"], label = method, linestyle='dashed', linewidth = 2,
-         marker='o', markersize=6)
-        for i_x, i_y in zip(results["x"], results["y"]):
-            ax1.text(i_x, i_y, '  ({}%)'.format(int(i_y)))
-    ax1.set_title("Performance")
+        ax1.plot(results["x"], results["y"], label = method, linestyle=linetypes[int(i%2)], linewidth = 3)
+        i += 1
+    ax1.set_title("true-positive identification rate")
     ax1.legend()
+    ax1.grid(True)
     plt.show()
 
     fig, ax1 = plt.subplots()
     ax1.set_xlabel('stretch intensity - %')
-    ax1.set_ylabel('successful matches - %')
+    ax1.set_ylabel('FTE')
     ax1.tick_params(axis='y')
+    i = 0
     for method in method_results.keys():
         results = method_results[method]
-        ax1.plot(results["x"], results["faces"], label=method, linestyle='dashed', linewidth=2,
-                 marker='o', markersize=6)
-        for i_x, i_y in zip(results["x"], results["faces"]):
-            ax1.text(i_x, i_y, '  ({}%)'.format(int(i_y)))
-    ax1.set_title("Performance")
+        ax1.plot(results["x"], results["faces"], label=method, linestyle=linetypes[int(i%2)], linewidth=3)
+        i += 1
+    ax1.set_title("failure-to-entrol rate")
     ax1.legend()
+    ax1.grid(True)
+    plt.show()
+
+    fig, ax1 = plt.subplots()
+    ax1.set_xlabel('stretch intensity - %')
+    ax1.set_ylabel('TPIR')
+    ax1.tick_params(axis='y')
+    i = 0
+    for method in method_results.keys():
+        results = method_results[method]
+        ax1.plot(results["x"], results["diff"], label=method, linestyle=linetypes[int(i % 2)], linewidth=3)
+        i += 1
+    ax1.set_title("true-positive identification rate (adjusted)")
+    ax1.legend()
+    ax1.grid(True)
     plt.show()
 
 

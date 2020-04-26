@@ -1,1 +1,0 @@
-ffmpeg -i datasets/faces94-sorted/train/voudcx/id.pgm -vf scale='iw*0.60:ih/1, pad=180:200:(180-iw*min(180/iw\,200/ih))/2:(200-ih*min(180/iw\,200/ih))/2' datasets/faces94-sorted-stretched/40/voudcx/stretched.pgm

@@ -1,4 +1,4 @@
-# Termpaper Code
+# Face Stretch Pipeline
 
 ## Setup environment
 
